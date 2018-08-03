@@ -2,6 +2,7 @@
 using Autofac;
 using Autofac.Features.Variance;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web.API.IoC
 {
@@ -11,6 +12,8 @@ namespace Web.API.IoC
         {
             builder.RegisterAssemblyTypes(ThisAssembly)
                 .AsImplementedInterfaces();
+
+            builder.RegisterType<HasScopeHandler>().As<IAuthorizationHandler>().SingleInstance();
 
             // enables contravariant Resolve() for interfaces with single contravariant ("in") arg
             builder

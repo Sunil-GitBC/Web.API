@@ -57,9 +57,6 @@ namespace Web.API
                     policy => policy.Requirements.Add(new HasScopeRequirement("write:products", domain)));
             });
 
-            // register the scope authorization handler
-            services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
-
             // Add Autofac
             var containerBuilder = new ContainerBuilder();
             containerBuilder.RegisterModule<SetupModule>();

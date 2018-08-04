@@ -9,6 +9,10 @@ Configuration:
 - This project auth is using Auth0. Open appsettings.json and fill in your settings
 - required scope: read:products write:products
 
+Unit test:
+- Open and run test with VS
+- use dotnet CLI: go to test project folder and use `dotnet test` command
+
 Dependencies:
 - Auth0 account
 

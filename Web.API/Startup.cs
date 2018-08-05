@@ -8,8 +8,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Web.API.Auth;
 using Web.API.Entity;
 using Web.API.IoC;
+using Web.API.Middleware;
 using Web.API.Services;
 
 namespace Web.API
@@ -28,21 +30,17 @@ namespace Web.API
         {
             services.AddDbContext<ProductDbContext>(opt =>
                 opt.UseInMemoryDatabase("JbRepo"));
-            services.AddScoped<IProductService, ProductService>();
-
-            services.AddMvc();
 
             services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader()));
 
             // Add auth0 
-            string domain = $"https://{Configuration["Auth0:Domain"]}/";
+            var domain = $"https://{Configuration["Auth0:Domain"]}/";
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
             }).AddJwtBearer(options =>
             {
                 options.Authority = domain;
@@ -56,6 +54,8 @@ namespace Web.API
                 options.AddPolicy("write:products",
                     policy => policy.Requirements.Add(new HasScopeRequirement("write:products", domain)));
             });
+
+            services.AddMvc();
 
             // Add Autofac
             var containerBuilder = new ContainerBuilder();
@@ -75,6 +75,7 @@ namespace Web.API
             }
 
             app.UseCors("AllowAll");
+            app.UseExceptionHandlerMiddleware();
             app.UseAuthentication();
 
             productDbContext.EnsureDbSeeded();

@@ -3,6 +3,7 @@ using Autofac;
 using Autofac.Features.Variance;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Web.API.Auth;
 
 namespace Web.API.IoC
 {

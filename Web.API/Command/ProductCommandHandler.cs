@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
 using Web.API.Services;
 
 namespace Web.API.Command
@@ -14,7 +15,7 @@ namespace Web.API.Command
             _productService = productService;
         }
 
-        public async Task Handle(ProductCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(ProductCommand command, CancellationToken cancellationToken)
         {
             switch (command.ProductOperation)
             {
@@ -30,6 +31,8 @@ namespace Web.API.Command
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            return Unit.Value;
         }
     }
 }

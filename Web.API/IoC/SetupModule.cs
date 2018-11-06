@@ -27,22 +27,15 @@ namespace Web.API.IoC
                 .InstancePerLifetimeScope();
 
             // request handlers
-            builder
-                .Register<SingleInstanceFactory>(context =>
+            builder.Register<ServiceFactory>(context =>
+            {
+                var componentContext = context.Resolve<IComponentContext>();
+                return t =>
                 {
-                    var ctx = context.Resolve<IComponentContext>(); // unsure why needed, but it works
-                    return t => ctx.TryResolve(t, out var o) ? o : null;
-                })
-                .InstancePerLifetimeScope();
-
-            // notification handlers
-            builder
-                .Register<MediatR.MultiInstanceFactory>(context =>
-                {
-                    var ctx = context.Resolve<IComponentContext>(); 
-                    return t => (IEnumerable<object>)ctx.Resolve(typeof(IEnumerable<>).MakeGenericType(t));
-                })
-                .InstancePerLifetimeScope();
+                    object o;
+                    return componentContext.TryResolve(t, out o) ? o : null;
+                };
+            });
         }
     }
 }
